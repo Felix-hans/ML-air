@@ -53,7 +53,7 @@ train = BashOperator(
     dag=dag,
 )
 
-'''
+
 serve_commands = """
     lsof -i tcp:8008 | awk 'NR!=1 {print $2}' | xargs kill;
     python3 /usr/local/airflow/scripts/serve.py serve
@@ -65,9 +65,9 @@ serve = BashOperator(
     retries=3,
     dag=dag,
 )
-'''
+
 
 #sets the ordering of the DAG. The >> directs the 2nd task to run after the 1st task. This means that
 #download images runs first, then train, then serve.
-download_images >> train
-# download_images >> train >> serve
+# download_images >> train
+download_images >> train >> serve

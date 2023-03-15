@@ -1,8 +1,8 @@
-'''
+
 #deep learning libraries
-from fastai.vision import load_learner, Path, defaults, open_image
+# from fastai.vision import load_learner, Path, defaults, open_image
 import torch
-defaults.device = torch.device('cpu')
+# defaults.device = torch.device('cpu')
 
 #web frameworks
 from starlette.applications import Starlette
@@ -23,8 +23,8 @@ async def get_bytes(url):
             return await response.read()
 
 app = Starlette()
-path = Path('/usr/local/airflow/data')
-learner = load_learner(path)
+# path = Path('/usr/local/airflow/data')
+# learner = load_learner(path)
 
 @app.route("/upload", methods = ["POST"])
 async def upload(request):
@@ -46,25 +46,23 @@ def predict_image_from_bytes(bytes):
     img_uri = base64.b64encode(open("img.jpg", 'rb').read()).decode('utf-8')
     
     #make inference on image and return an HTML response
-    img = open_image(img_file)
-    pred_class, pred_idx, outputs = learner.predict(img)
-    formatted_outputs = ["{:.1f}%".format(value) for value in [x * 100 for x in torch.nn.functional.softmax(outputs, dim = 0)]]
-    pred_probs = sorted(zip(learner.data.classes, map(str, formatted_outputs)),
-                        key = lambda p: p[1],
-                        reverse = True
-                       )
+    # img = open_image(img_file)
+    # pred_class, pred_idx, outputs = learner.predict(img)
+    # formatted_outputs = ["{:.1f}%".format(value) for value in [x * 100 for x in torch.nn.functional.softmax(outputs, dim = 0)]]
+    # pred_probs = sorted(zip(learner.data.classes, map(str, formatted_outputs)),
+    #                     key = lambda p: p[1],
+    #                     reverse = True
+    #                    )
     return HTMLResponse(
         """
         <html>
             <body>
-                <p> Prediction: <b> %s </b> </p>
-                <p> Confidence: <b> %s </b> </p>
+                <p> Prediction: <b>  </b> </p>
+                <p> Confidence: <b>  </b> </p>
             </body>
-        <figure class = "figure">
-            <img src="data:image/png;base64, %s" class = "figure-img">
-        </figure>
+
         </html>
-        """ %(pred_class, pred_probs, img_uri))
+        """ 
         
 @app.route("/")
 def form(request):
@@ -89,9 +87,8 @@ def form(request):
 @app.route("/form")
 def redirect_to_homepage(request):
         return RedirectResponse("/")
-        
+     
 if __name__ == "__main__":
     if "serve" in sys.argv:
         port = int(os.environ.get("PORT", 8008)) 
         uvicorn.run(app, host = "0.0.0.0", port = port)
-'''
